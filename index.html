@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="https://getbootstrap.com/favicon.ico">
 
-    <title>Album example for Bootstrap</title>
+    <title>黑洞|星云链上的树洞</title>
 
     <!-- Bootstrap core CSS -->
     <link href="lib/bootstrap.min.css" rel="stylesheet">
@@ -25,31 +25,37 @@
 
       <section class="jumbotron text-center">
         <div class="container">
-          <h1 class="jumbotron-heading">Album example</h1>
-          <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
+          <h1 class="jumbotron-heading">黑洞</h1>
+          <p class="lead text-muted text-left">黑洞是一个部署在星云链上的树洞服务智能合约，在这里你可以放心地倾诉您的心事。</p>
         </div>
 
         <div class="container">
-          <form>
+
             <div class="form-group">
               <textarea class="form-control" id="content" rows="6"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary mb-2">丢进黑洞</button>
-          </form>
+            <button type="submit" id="submitButton" class="btn btn-primary mb-2">丢进黑洞</button>
+
         </div>
       </section>
 
       <div class="album py-5 bg-light ">
         <div class="container ">
-          <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div class="card mb-4 box-shadow">
-                <div class="card-body">
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                    additional content. This content is a little bit longer.</p>
-                </div>
-              </div>
-            </div>
+              <div class="row justify-content-center">
+                <!--<div class="col-md-8">
+                  <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                        </div>
+                        <small class="text-muted">9 mins</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>-->
           </div>
         </div>
       </div>
@@ -64,21 +70,131 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="lib/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="lib/jquery-3.3.1.slim.min.js" ></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="lib/popper.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <script src="lib/holder.min.js"></script>
+    <script src=lib/nebPay.js></script>
+    <script src=lib/nebulas.js></script>
     <script>
 
-        <div class="col-md-8">
-        <div class="card mb-4 box-shadow">
-        <div class="card-body">
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-    additional content. This content is a little bit longer.</p>
-    </div>
-    </div>
-    </div>
+        "use strict";
+        if(typeof(webExtensionWallet) === "undefined"){
+            alert ("请在使用服务前下载chrome的钱包扩展https://github.com/ChengOrangeJu/WebExtensionWallet")
+            //$("#noExtension").removeClass("hide")
+        }
+        var dappAddress = "n1kKBELZQzKsRKbRfWBMoNw8a2SmXgtSuyd";
+
+
+        var nebulas = require("nebulas"),
+            Account = nebulas.Account,
+            neb = new nebulas.Neb();
+        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+        var nebPay = new NebPay();
+        //加载
+        var from = Account.NewAccount().getAddressString();
+
+        var value = "0";
+        var nonce = "0"
+        var gas_price = "1000000"
+        var gas_limit = "2000000"
+        var callFunction = "get";
+        var callArgs = "[\"" + "1" + "\",\"" + "20" + "\"]"
+        var contract = {
+            "function": callFunction,
+            "args": callArgs
+        }
+
+        neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+            cbSearch(resp)
+        }).catch(function (err) {
+            //cbSearch(err)
+            console.log("error:" + err.message)
+        })
+        //return of search,
+        function cbSearch(resp) {
+            var result = resp.result    ////resp is an object, resp.result is a JSON string
+            //console.log("return of rpc call: " + JSON.stringify(result))
+
+            if (result === 'null'){
+
+
+            } else{
+                //if result is not null, then it should be "return value" or "error message"
+                try{
+                    var array = JSON.parse(result)
+                    //console.log(array)
+                    $.each(array, function( index, value ) {
+                        /*console.log(index)
+                        console.log(value)*/
+
+                        var d = new Date(value.time);
+                        var time = d.toLocaleString();
+                        var $div = $("<div class='col-md-8' id='"+ value.index +"'>\n" +
+                            "              <div class='card mb-4 box-shadow'>\n" +
+                            "                <div class='card-body'>\n" +
+                            "                  <p class='card-text' >"+value.content+"</p>\n" +
+                            "                  <div class='d-flex justify-content-between align-items-center'>\n" +
+                            "                    <div class='btn-group'>\n" +
+                            "                      <button type='button' class='btn btn-sm btn-outline-secondary deleteButton' id='"+"delete-"+value.index+"'>删除</button>\n" +
+                            "                    </div>\n" +
+                            "                    <small class='text-muted'>"+time+"</small>\n" +
+                            "                  </div>\n" +
+                            "                </div>\n" +
+                            "              </div>\n" +
+                            "            </div>");
+                        //console.log($div)
+                        $div.appendTo(".justify-content-center")
+                    });
+
+                }catch (err){
+                    //result is the error message
+                }
+
+
+            }
+
+        }
+
+        $("#submitButton").click(function() {
+
+            var to = dappAddress;
+            var value = "0";
+            var callFunction = "save"
+            var callArgs = "[\"" + $("#content").val() + "\"]"; //in the form of ["args"]
+
+
+            nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: cbPush
+            });
+        });
+
+        function cbPush(resp) {
+            alert("等待交易确认后再刷新即可看到您的树洞")
+            console.log("response of push: " + JSON.stringify(resp))
+        }
+
+        $(document).on("click touchend", ".deleteButton", function () {
+            console.log("test")
+            var to = dappAddress;
+            var value = "0";
+            var callFunction = "del"
+            var id = this.id.replace("delete-", "");
+            var callArgs =  "[\""+ id + "\"]"
+
+            nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: cbDelete(value, id)
+            });
+
+        });
+
+        function cbDelete(resp, id) {
+            $("#"+id).css("display", "none");
+            console.log("response of del: " + JSON.stringify(resp))
+        }
+
     </script>
   
 

@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
+  <meta content="" name="description" />
+  <meta content="" name="author" />
+
+  <title>neb.zone | 开放的星云联邦服务</title>
+  <link href="favicon.png" rel="icon" />
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Custom styles for this template -->
+  <link href="css/agency.min.css" rel="stylesheet" />
+  <style>
+    .bg-grey {
+      background-color: #f6f6f6;
+    }
+
+  </style>
+
+
+
+</head><body id="page-top">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand js-scroll-trigger" href="#page-top">neb.zone</a>
+   <!-- <a href="?locale=en">EN</a>|<a href="?locale=zh">中文</a>-->
+    <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right" data-target="#navbarResponsive" data-toggle="collapse" type="button">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav text-uppercase ml-auto">
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#services">关于</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#search">搜索</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#binding">绑定</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#unbinding">解绑</a>
+        </li>
+        <!--<li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#api">API接口</a>
+        </li>-->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="masthead">
+  <div class="container">
+    <div class="intro-text">
+      <div class="intro-lead-in">欢迎来到 neb.zone！</div>
+      <div class="intro-heading text-uppercase">让星云交易更简单</div>
+      <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#services">更多</a>
+    </div>
+  </div>
+</header>
+
+<!-- Service -->
+<section class="bg-grey" id="services">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">关于</h2>
+        <h3 class="section-subheading text-muted">neb.zone提供开放、免费而且专注的星云联邦服务。</h3>
+      </div>
+    </div>
+    <div class="row text-center">
+<p class="text-left">联邦服务是一种建立用户自定义用户名和区块链上地址的协议，概念可以参考恒星网络stellar的<a href="https://www.stellar.org/developers/guides/concepts/federation.html">联邦服务</a>。具体到星云联邦服务，定义类似的联邦协议如下：</p>
+      <ol class="text-left">
+        <li>用户A到neb.zone上给星云地址绑定一个个性的用户名比如A*neb.zone，这个绑定关系会通过智能合约写到星云区块链上</li>
+        <li>用户B通过钱包C给A*neb.zone转账时候，钱包C会先请求neb.zone/.well-known/nebulasio.toml获取到联邦服务的智能合约地址和合约方法</li>
+        <li>钱包C请求联邦服务的智能合约地址获得A的真实星云地址</li>
+        <li>钱包C向真实星云地址完成转账</li>
+      </ol>
+  </div>
+  </div>
+</section>
+<!-- Search -->
+<section id="search">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">查找星云地址</h2>
+        <h3 class="section-subheading text-muted">在这里你可以查询星云名是否被占用，或者查询用户名对应的星云地址</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="input-group">
+                  <input class="form-control" data-validation-required-message="请输入星云名。" name="search_value"  id="search_value" placeholder="您想要查询的星云名 *" required="" size="25" type="text" value="" />
+                  <span class="input-group-addon">*neb.zone</span>
+                </div>
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-lg-12 text-center">
+              <div>
+                <div class="alert alert-success" id="search_success" style="display: none;">
+                  <strong>成功！</strong> <span style="word-wrap:break-word;" id="search_result"></span>
+                </div>
+                <div class="alert alert-warning" id="search_failed" style="display: none;">
+                  <strong>抱歉！</strong> <span style="word-wrap:break-word;">没找到任何结果！</span>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-xl text-uppercase" id="searchButton" type="submit">搜索</button>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Binding -->
+<section id="binding" class="bg-grey" >
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">声明星云名</h2>
+        <h3 class="section-subheading text-muted">在这里您可以声明一个name*neb.zone格式的星云名，然后和您的星云地址关联起来。</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="input-group">
+
+
+                  <input class="form-control" data-validation-required-message="请输入您理想的星云名。" name="binding_value" placeholder="您理想的星云名 *" required="" size="25" type="text" id="binding_value" value="" />
+                  <span class="input-group-addon">*neb.zone</span>
+                </div>
+                <p class="help-block text-danger"></p>
+
+              </div>
+
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-lg-12 text-center">
+              <div>
+
+                <div class="alert alert-success" name="bind_success" id="bind_success" style="display: none;">
+                  <strong>绑定成功！</strong>
+                </div>
+
+              </div>
+              <button class="btn btn-primary btn-xl text-uppercase" id="bindButton" type="submit">绑定</button>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- Unbinding -->
+<section id="unbinding">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading text-uppercase">解除绑定</h2>
+        <h3 class="section-subheading text-muted">在这里您可以解除绑定。</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="input-group">
+
+                  <input class="form-control" data-validation-required-message="请输入您的星云名。" name="unbinding_value" placeholder="您的星云名 *" required="" size="25" type="text" id="unbinding_value" value="" />
+                  <span class="input-group-addon">*neb.zone</span>
+                </div>
+                <p class="help-block text-danger"></p>
+
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-lg-12 text-center">
+              <div>
+                <div class="alert alert-success" id="unbind_success" style="display: none;">
+                  <strong>解绑成功！</strong>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-xl text-uppercase" id="withdrawButton" type="submit">解绑</button>
+            </div>
+          </div>
+
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Footer -->
+<footer class="bg-grey" >
+  <div class="container" >
+    <div class="row">
+      <div class="col-md-12">
+        <span class="copyright"><span>版权所有</span> &copy; neb.zone 2017</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Plugin JavaScript -->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Contact form JavaScript -->
+<script src="js/jqBootstrapValidation.js"></script>
+<script src="js/contact_me.js"></script>
+
+<!-- Custom scripts for this template -->
+<script src="js/agency.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("input,select,textarea").not("[type=submit]").jqBootstrapValidation();
+    });
+
+
+
+</script>
+
+<script src=js/nebPay.js></script>
+
+<script>
+    var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+    var nebPay = new NebPay();
+
+
+    //to check if the extension is installed
+    //if the extension is installed, var "webExtensionWallet" will be injected in to web page
+    if(typeof(webExtensionWallet) === "undefined"){
+        alert ("请在使用星云联邦服务前下载chrome的钱包扩展https://github.com/ChengOrangeJu/WebExtensionWallet")
+        //$("#noExtension").removeClass("hide")
+    }
+
+    var dappAddress = "n1ohen5qfdihLSQukkKCzaVXstvf5KvcaNp";//need to change
+
+    // 搜索功能: 查找用户名
+    $("#searchButton").click(function(){
+        // $("#search_value").val() 搜索框内的值
+
+        var to = dappAddress;
+        var value = "0";
+        var callFunction = "get";
+        var callArgs = "[\"" + $("#search_value").val() + "\"]"; //in the form of ["args"]
+        nebPay.simulateCall(to, value, callFunction, callArgs, {    //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+            listener: cbSearch      //指定回调函数
+        });
+    })
+
+    //return of search,
+    function cbSearch(resp) {
+        var result = resp.result
+        console.log("return of rpc call: " + JSON.stringify(result))
+
+        if (result === 'null'){
+            //$("#search_success").addClass("hide");
+            $("#search_failed").css("display", "");;
+            $("#search_failed").fadeOut(10000);
+        } else{
+            //if result is not null, then it should be "return value" or "error message"
+            try{
+                result = JSON.parse(result)
+            }catch (err){
+                //result is the error message
+            }
+
+            if (!!result.username){      //"return value"
+
+                //$("#search_banner").text($("#search_value").val())
+                //$("#search_result").text(result.value)
+                $("#search_result").text("用户名"+ $("#search_value").val()+ "*neb.zone对应的星云账号是：" + result.address)
+                $("#search_success").css("display", "");;
+                $("#search_success").fadeOut(10000);
+                //$("#search_failed").addClass("hide");
+
+            } else {        //"error message"
+
+                $("#search_failed").css("display", "");
+                $("#search_failed").fadeOut(10000);
+
+            }
+
+        }
+
+    }
+
+    $("#bindButton").click(function() {
+
+        var to = dappAddress;
+        var value = "0";
+        var callFunction = "save"
+        var callArgs =  "[\""+ $("#binding_value").val() + "\"]"
+
+        nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+            listener: cbPush
+        });
+    });
+
+    function cbPush(resp) {
+        $("#bind_success").css("display", "");
+        $("#bind_success").fadeOut(10000);
+        console.log("response of push: " + JSON.stringify(resp))
+    }
+
+
+    $("#withdrawButton").click(function() {
+
+        var to = dappAddress;
+        var value = "0";
+        var callFunction = "del"
+        var callArgs =  "[\""+ $("#unbinding_value").val() + "\"]"
+
+        nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+            listener: cbDelete
+        });
+    });
+
+    function cbDelete(resp) {
+
+        $("#unbind_success").css("display", "");
+        $("#unbind_success").fadeOut(10000);
+        console.log("response of del: " + JSON.stringify(resp))
+    }
+</script>
+
+</body></html>
