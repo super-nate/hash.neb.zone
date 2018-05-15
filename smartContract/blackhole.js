@@ -1,6 +1,6 @@
 "use strict";
 
-var Whisper = function(text) {
+var Post = function(text) {
 	if (text) {
 		var obj = JSON.parse(text);
 		this.content = obj.content;
@@ -16,16 +16,16 @@ var Whisper = function(text) {
 
 };
 
-Whisper.prototype = {
+Post.prototype = {
 	toString: function () {
 		return JSON.stringify(this);
 	}
 };
 
-var FederationService = function () {
-    LocalContractStorage.defineMapProperty(this, "whispers", {
+var MarketplaceService = function () {
+    LocalContractStorage.defineMapProperty(this, "posts", {
         parse: function (text) {
-            return new Whisper(text);
+            return new Post(text);
         },
         stringify: function (o) {
             return o.toString();
@@ -35,7 +35,7 @@ var FederationService = function () {
     LocalContractStorage.defineProperty(this, "creator");
 };
 
-FederationService.prototype = {
+MarketplaceService.prototype = {
     init: function () {
         // save the creator
         var from = Blockchain.transaction.from;
@@ -49,14 +49,14 @@ FederationService.prototype = {
             throw new Error("empty content");
         }
 
-        var whisper  = new Whisper();
+        var post  = new Post();
         var from = Blockchain.transaction.from;
 
-        whisper.content = content;
-        whisper.address = from;
-        whisper.time = new Date();
-        whisper.index = this.size;
-        var result = this.whispers.put(this.size, whisper);
+        post.content = content;
+        post.address = from;
+        post.time = new Date();
+        post.index = this.size;
+        var result = this.posts.put(this.size, post);
         this.size++;
         return result;
     },
@@ -78,7 +78,7 @@ FederationService.prototype = {
 
         var results = [];
         for (;i<num; start--,i++ ){
-            var result = this.whispers.get(start);
+            var result = this.posts.get(start);
             if (result == null) {
                 continue; //the element of the index might be deleted
             }
@@ -93,12 +93,12 @@ FederationService.prototype = {
             throw new Error("empty content")
         }
 
-        var whisper = this.whispers.get(index);
-        if ( whisper.address === Blockchain.transaction.from || this.creator=== Blockchain.transaction.from ) {
-            this.whispers.del(index);
+        var post = this.posts.get(index);
+        if ( post.address === Blockchain.transaction.from || this.creator=== Blockchain.transaction.from ) {
+            this.posts.del(index);
         }
         else {
-            throw new Error("you can not delete the whisper")
+            throw new Error("you can not delete the post")
         }
     },
 
@@ -113,4 +113,4 @@ FederationService.prototype = {
 
 
 };
-module.exports = FederationService;
+module.exports = MarketplaceService;
