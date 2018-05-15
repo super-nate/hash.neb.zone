@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="https://getbootstrap.com/favicon.ico">
 
     <title>黑洞|星云链上的树洞</title>
 
@@ -81,16 +80,16 @@
 
         "use strict";
         if(typeof(webExtensionWallet) === "undefined"){
-            alert ("请在使用服务前下载chrome的钱包扩展https://github.com/ChengOrangeJu/WebExtensionWallet")
+            alert ("如果您想往黑洞里面说话，请先下载chrome的钱包扩展https://github.com/ChengOrangeJu/WebExtensionWallet")
             //$("#noExtension").removeClass("hide")
         }
-        var dappAddress = "n1kKBELZQzKsRKbRfWBMoNw8a2SmXgtSuyd";
+        var dappAddress = "n1qiWFkTpkhyWqE2dzfAGLq5nmiSrXwkR6v";
 
 
         var nebulas = require("nebulas"),
             Account = nebulas.Account,
             neb = new nebulas.Neb();
-        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
         var nebPay = new NebPay();
         //加载
