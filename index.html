@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>空间站 | 星云链上的跳蚤市场</title>
+    <title>文件存证 | 星云链上的公证处</title>
 
     <!-- Bootstrap core CSS -->
     <link href="lib/bootstrap.min.css" rel="stylesheet">
@@ -24,45 +24,33 @@
 
       <section class="jumbotron text-center">
         <div class="container">
-          <h1 class="jumbotron-heading">空间站</h1>
-          <p class="lead text-muted text-left">空间站是一个部署在星云链上的跳蚤市场服务智能合约，在这里您可以发布一些商品（比如二手商品）信息、价格、您的城市和您的联系方式，如果您想删除已经发布的信息，只要点击删除按钮然后通过用发布信息的星云账号调用合约的删除函数即可。</p>
+          <h1 class="jumbotron-heading">文件存证</h1>
+          <p class="lead text-muted text-left">文件存证服务是通过在网站前端对您的文件进行哈希摘要，然后把哈希存储到星云链上，日后你可以通过对比文件哈希来判断文件是否被篡改过。</p>
         </div>
 
         <div class="container">
 
+            <input type="file" multiple size="50"  class="align-middle" id="hashButton">
+            <p>&nbsp;</p>
             <div class="form-group">
-              <textarea class="form-control" id="content" rows="6"></textarea>
+                <input class="form-control" id="filename" rows="6" placeholder="自定义检索关键字，方便您日后查找文件哈希*">
+                <input class="form-control" id="hash" rows="6" placeholder="文件哈希*">
             </div>
-            <button type="submit" id="submitButton" class="btn btn-primary mb-2">丢进黑洞</button>
+            <button type="submit" id="submitButton" class="btn btn-primary mb-2">保存哈希</button>
+            <div class="form-group">
+                <input class="form-control" id="keyword" rows="6" placeholder="检索关键字*">
+            </div>
+            <button type="submit" id="searchButton" class="btn btn-primary mb-2">查找哈希</button>
+            <div class="alert" id="searchResult">
 
+            </div>
         </div>
       </section>
-
-      <div class="album py-5 bg-light ">
-        <div class="container ">
-              <div class="row justify-content-center">
-                <!--<div class="col-md-8">
-                  <div class="card mb-4 box-shadow">
-                    <div class="card-body">
-                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                        additional content. This content is a little bit longer.</p>
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                          <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                        </div>
-                        <small class="text-muted">9 mins</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>-->
-          </div>
-        </div>
-      </div>
     </main>
 
     <footer class="text-muted">
       <div class="container">
-        <p class="text-center">Album example is © Bootstrap, but please download and customize it for yourself!</p>
+        <p class="text-center"><span>版权所有</span> &copy; neb.zone 2018</p>
       </div>
     </footer>
 
@@ -76,93 +64,46 @@
     <script src="lib/holder.min.js"></script>
     <script src=lib/nebPay.js></script>
     <script src=lib/nebulas.js></script>
+      <script src="node_modules/browser-md5-file/dist/browser-md5-file.js"></script>
     <script>
 
         "use strict";
         if(typeof(webExtensionWallet) === "undefined"){
-            alert ("如果您想往跳蚤市场发布信息，请先下载chrome的钱包扩展https://github.com/ChengOrangeJu/WebExtensionWallet")
+            alert ("如果您想保存文件哈希，请先下载chrome的钱包扩展https://github.com/ChengOrangeJu/WebExtensionWallet")
             //$("#noExtension").removeClass("hide")
         }
-        var dappAddress = "n1qiWFkTpkhyWqE2dzfAGLq5nmiSrXwkR6v";
+        var dappAddress = "n21tua5bpKm32gQiUCju4U5NHdEghzjeGTM";//testnet
 
 
-        var nebulas = require("nebulas"),
-            Account = nebulas.Account,
-            neb = new nebulas.Neb();
-        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
         var nebPay = new NebPay();
-        //加载
-        var from = Account.NewAccount().getAddressString();
-
-        var value = "0";
-        var nonce = "0"
-        var gas_price = "1000000"
-        var gas_limit = "2000000"
-        var callFunction = "get";
-        var callArgs = "[\"" + "1" + "\",\"" + "20" + "\"]"
-        var contract = {
-            "function": callFunction,
-            "args": callArgs
-        }
-
-        neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
-            cbSearch(resp)
-        }).catch(function (err) {
-            //cbSearch(err)
-            console.log("error:" + err.message)
-        })
-        //return of search,
-        function cbSearch(resp) {
-            var result = resp.result    ////resp is an object, resp.result is a JSON string
-            //console.log("return of rpc call: " + JSON.stringify(result))
-
-            if (result === 'null'){
 
 
-            } else{
-                //if result is not null, then it should be "return value" or "error message"
-                try{
-                    var array = JSON.parse(result)
-                    //console.log(array)
-                    $.each(array, function( index, value ) {
-                        /*console.log(index)
-                        console.log(value)*/
+        /*var el = document.getElementById('hashButton');
+        el.addEventListener('change', handle, false);
 
-                        var d = new Date(value.time);
-                        var time = d.toLocaleString();
-                        var $div = $("<div class='col-md-8' id='"+ value.index +"'>\n" +
-                            "              <div class='card mb-4 box-shadow'>\n" +
-                            "                <div class='card-body'>\n" +
-                            "                  <p class='card-text' >"+value.content+"</p>\n" +
-                            "                  <div class='d-flex justify-content-between align-items-center'>\n" +
-                            "                    <div class='btn-group'>\n" +
-                            "                      <button type='button' class='btn btn-sm btn-outline-secondary deleteButton' id='"+"delete-"+value.index+"'>删除</button>\n" +
-                            "                    </div>\n" +
-                            "                    <small class='text-muted'>"+time+"</small>\n" +
-                            "                  </div>\n" +
-                            "                </div>\n" +
-                            "              </div>\n" +
-                            "            </div>");
-                        //console.log($div)
-                        $div.appendTo(".justify-content-center")
-                    });
+        function handle(e) {
+            var file = e.target.files[0];
+            browserMD5File(file, function (err, md5) {
 
-                }catch (err){
-                    //result is the error message
-                }
+                console.log("hash: " + md5); // 97027eb624f85892c69c4bcec8ab0f11
+            });
+        }*/
 
-
-            }
-
-        }
+        $('#hashButton').bind('change', function (e) {
+            var file = e.target.files[0];
+            browserMD5File(file, function (err, md5) {
+                $("#hash").val(md5);
+                console.log("hash: " + md5); // 97027eb624f85892c69c4bcec8ab0f11
+            });
+        });
 
         $("#submitButton").click(function() {
 
             var to = dappAddress;
             var value = "0";
             var callFunction = "save"
-            var callArgs = "[\"" + $("#content").val() + "\"]"; //in the form of ["args"]
+            var callArgs = "[\"" + $("#filename").val() + "\",\"" + $("#hash").val() + "\"]"; //in the form of ["args"]
 
 
             nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
@@ -171,29 +112,42 @@
         });
 
         function cbPush(resp) {
-            alert("等待交易确认后再刷新即可看到您的树洞")
+            alert("保存成功")
             console.log("response of push: " + JSON.stringify(resp))
         }
 
-        $(document).on("click touchend", ".deleteButton", function () {
-            console.log("test")
+        // 搜索功能: 查找用户名
+        $("#searchButton").click(function(){
+            // $("#search_value").val() 搜索框内的值
+
             var to = dappAddress;
             var value = "0";
-            var callFunction = "del"
-            var id = this.id.replace("delete-", "");
-            var callArgs =  "[\""+ id + "\"]"
-
-            nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
-                listener: cbDelete(value, id)
+            var callFunction = "get";
+            var callArgs = "[\"" + $("#keyword").val() + "\"]"; //in the form of ["args"]
+            nebPay.simulateCall(to, value, callFunction, callArgs, {    //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+                listener: cbSearch      //指定回调函数
             });
+        })
 
-        });
-
-        function cbDelete(resp, id) {
-            $("#"+id).css("display", "none");
-            console.log("response of del: " + JSON.stringify(resp))
+        function cbSearch(resp) {
+            var result = resp.result
+            console.log("return of rpc call: " + JSON.stringify(result))
+            if (result === 'null'){
+                //$("#search_success").addClass("hide");
+                $("#searchResult").text("找不到任何结果")
+                $("#searchResult").addClass("alert-warning")
+            } else{
+                //if result is not null, then it should be "return value" or "error message"
+                try {
+                    result = JSON.parse(result)
+                    $("#searchResult").text("文件哈希为："+ result.hash);
+                    $("#searchResult").addClass("alert-success")
+                }
+                catch (err) {
+                    //result is the error message
+                }
+            }
         }
-
     </script>
   
 
