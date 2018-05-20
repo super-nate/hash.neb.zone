@@ -25,7 +25,7 @@
       <section class="jumbotron text-center">
         <div class="container">
           <h1 class="jumbotron-heading">文件存证</h1>
-          <p class="lead text-muted text-left">文件存证服务是通过在网站前端对您的文件进行哈希摘要，然后把哈希存储到星云链上，日后你可以通过对比文件哈希来判断文件是否被篡改过。</p>
+          <p class="lead text-muted text-left">文件存证服务是通过在网站前端对您的文件进行哈希摘要，然后把哈希存储到星云链上，日后你可以通过对比文件哈希来判断文件是否被篡改过。注：保存哈希请先安装 <a href="https://github.com/ChengOrangeJu/WebExtensionWallet">Chrome Nebulas-WebExtensionWallet</a> 钱包插件</p>
         </div>
 
         <div class="container">
@@ -72,9 +72,14 @@
             alert ("如果您想保存文件哈希，请先下载chrome的钱包扩展https://github.com/ChengOrangeJu/WebExtensionWallet")
             //$("#noExtension").removeClass("hide")
         }
-        var dappAddress = "n21tua5bpKm32gQiUCju4U5NHdEghzjeGTM";//testnet
+        //var dappAddress = "n21tua5bpKm32gQiUCju4U5NHdEghzjeGTM";//testnet
+        var dappAddress = "n1pxxA74rDcKQ8GHqPNRQLK6fHYtu3wb3ga";//mainnet
 
-
+        var nebulas = require("nebulas"),
+            Account = nebulas.Account,
+            neb = new nebulas.Neb();
+        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+        //neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
         var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
         var nebPay = new NebPay();
 
@@ -120,14 +125,37 @@
         $("#searchButton").click(function(){
             // $("#search_value").val() 搜索框内的值
 
-            var to = dappAddress;
+            //加载
+            var from = Account.NewAccount().getAddressString();
+
+            var value = "0";
+            var nonce = "0"
+            var gas_price = "1000000"
+            var gas_limit = "2000000"
+            var callFunction = "get";
+            var callArgs = "[\"" + $("#keyword").val() + "\"]"; //in the form of ["args"]
+            var contract = {
+                "function": callFunction,
+                "args": callArgs
+            }
+
+            neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+                cbSearch(resp)
+            }).catch(function (err) {
+                //cbSearch(err)
+                console.log("error:" + err.message)
+            })
+
+           /* var to = dappAddress;
             var value = "0";
             var callFunction = "get";
             var callArgs = "[\"" + $("#keyword").val() + "\"]"; //in the form of ["args"]
             nebPay.simulateCall(to, value, callFunction, callArgs, {    //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
                 listener: cbSearch      //指定回调函数
-            });
+            });*/
         })
+
+
 
         function cbSearch(resp) {
             var result = resp.result
