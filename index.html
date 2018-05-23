@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>文件存证 | 星云链上的公证处</title>
+    <title>文件存证 | 星域系列产品</title>
 
     <!-- Bootstrap core CSS -->
     <link href="lib/bootstrap.min.css" rel="stylesheet">
@@ -24,8 +24,15 @@
 
       <section class="jumbotron text-center">
         <div class="container">
-          <h1 class="jumbotron-heading">文件存证</h1>
-          <p class="lead text-muted text-left">文件存证服务是通过在网站前端对您的文件进行哈希摘要（您的文件既不会通过网络传输，也不会保存到网络上），然后把哈希存储到星云链上，日后你可以通过对比文件哈希来判断文件是否被篡改过。注：保存哈希请先安装 <a href="https://github.com/ChengOrangeJu/WebExtensionWallet">Chrome Nebulas-WebExtensionWallet</a> 钱包插件</p>
+          <h1 class="jumbotron-heading">文件存证 | 星域系列产品</h1>
+          <p class="lead text-muted text-left">文件存证服务是通过在网站前端对您的文件进行哈希摘要（您的文件既不会通过网络传输，也不会保存到网络上），然后把哈希存储到星云链上，日后你可以通过对比文件哈希来判断文件是否被篡改过。注：保存哈希请先安装 <a href="https://github.com/ChengOrangeJu/WebExtensionWallet">Chrome Nebulas-WebExtensionWallet</a> 钱包插件。使用步骤如下：</p>
+
+            <ol class="text-left text-muted">
+                <li>点击选择文件按钮，选择你想要进行哈希的文件，选中文件后网站会在前端自动对文件进行哈希并填充文件哈希的空格，当然，如果您想要记录使用其他工具对文件进行摘要后的哈希值，只需要直接填充文件哈希那个空格即可。</li>
+                <li>为您的文件哈希定义一个独一无二的检索关键字填入第一个表单项，比如“毕业证180523”</li>
+                <li>点击保存哈希，并通过chrome钱包插件完成提交操作</li>
+                <li>检索时候，只需要填入你自定义的检索关键字即可找到对应的文件哈希</li>
+            </ol>
         </div>
 
         <div class="container">
@@ -36,7 +43,12 @@
                 <input class="form-control" id="filename" rows="6" placeholder="自定义检索关键字，方便您日后查找文件哈希*">
                 <input class="form-control" id="hash" rows="6" placeholder="文件哈希*">
             </div>
+            <div id="progress" class="progress" style="display: none">
+                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 70%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <!--<p>&nbsp;</p>-->
             <button type="submit" id="submitButton" class="btn btn-primary mb-2">保存哈希</button>
+
             <div class="form-group">
                 <input class="form-control" id="keyword" rows="6" placeholder="检索关键字*">
             </div>
@@ -117,9 +129,40 @@
         });
 
         function cbPush(resp) {
-            alert("保存成功")
             console.log("response of push: " + JSON.stringify(resp))
+            var result = JSON.stringify(resp);
+            if(result.includes("Error")){
+                alert("用户取消操作")
+                return
+            }
+            var status = 2
+            $("#progress").css("display", "");
+
+            var interval = setInterval(function(){
+
+                neb.api.getTransactionReceipt({hash: resp.txhash}).then(function (receipt) {
+                    console.log("response of receipt: " + JSON.stringify(receipt))
+                    status = receipt.status
+                    if (status === 0) {
+                        $("#progress").css("display", "none");
+                        alert("保存失败，检索关键字已存在或者检索关键字/文件哈希为空")
+                    }
+                    if (status === 1){
+                        $("#progress").css("display", "none");
+                        alert("保存成功")
+                    }
+                    if(status!==2){
+                        clearInterval(interval);
+                        return;
+                    }
+                })
+
+             //do whatever here..
+            }, 2000);
         }
+
+
+
 
         // 搜索功能: 查找用户名
         $("#searchButton").click(function(){
@@ -163,12 +206,14 @@
             if (result === 'null'){
                 //$("#search_success").addClass("hide");
                 $("#searchResult").text("找不到任何结果")
+                $("#searchResult").removeClass("alert-success")
                 $("#searchResult").addClass("alert-warning")
             } else{
                 //if result is not null, then it should be "return value" or "error message"
                 try {
                     result = JSON.parse(result)
                     $("#searchResult").text("文件哈希为："+ result.hash);
+                    $("#searchResult").removeClass("alert-warning")
                     $("#searchResult").addClass("alert-success")
                 }
                 catch (err) {
